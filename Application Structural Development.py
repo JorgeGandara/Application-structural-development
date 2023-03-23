@@ -1,24 +1,29 @@
 # Jorge Andres Gandara Oliveros T00065470
-class Object:
-    def __init__(self,id = int, cost_per_weigth = float, description = str, provider = str) -> None:
-        self._id=id
-        self._cost_per_weigth=cost_per_weigth
-        self._description=description
-        self._provider=provider
 class Package:
-    def __init__(self, id = int, objects = [Object], weight = 0, description = str, cost = float):
+    def __init__(self, id = int, weight = 0, cost_per_gram = float, description = str, delivery_fee = float):
         self._id=id
-        self._object=object
         self._weigth=weight
         self._description=description
-        self._cost=cost
-class OverweightPackage(Package):
-    def __init__(self, id=int, objects=[Object], weight=0, description=str, cost=float):
-        super().__init__(id, objects, weight, description, cost)
-        self.overweigth_cost=cost
+        self._cost_per_gram=cost_per_gram
+    def calculate(self):
+        return self._weigth * self._cost_per_gram
 class StandardPackage(Package):
-    def __init__(self, id=int, objects=[Object], weight=0, description=str, cost=float):
-        super().__init__(id, objects, weight, description, cost)
+    def __init__(self, id=int, weight=0, cost_per_gram=float, description=str, delivery_fee=float):
+        super().__init__(id, weight, cost_per_gram, description)
+        self.delivery_fee = max(delivery_fee,0)
+    def calculate(self):
+        return super().calculate() + self.delivery_fee 
+class OverweightPackage(Package):
+    def __init__(self, id=int, weight=0, cost_per_gram=float, description=str, overweight_cost_per_gram=float):
+        super().__init__(id, weight, cost_per_gram, description)
+        self.overweight_cost_per_gram = max(overweight_cost_per_gram, 0)
+    def calculate(self):
+        if self.weight <= 1000:
+            return super().calculate()
+        else:
+            overweight = self.weight - 1000
+            overweight_cost = overweight * self.overweight_cost_per_gram
+            return super().calculate() + overweight_cost
 class Adress:
     def __init__(self, st = str,city = str, hood = str, country = str, PC = int):
         self._st=st
